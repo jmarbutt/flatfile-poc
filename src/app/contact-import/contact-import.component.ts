@@ -21,16 +21,12 @@ export class ContactImportComponent implements OnInit {
   ngOnInit() {
     FlatfileImporter.setVersion(2);
     this.initializeImporter();
-    // this.importer.registerRecordHook((record, index) => {
-    //   let out: any = {};
-
-
-
-
-    //   // Check All Properties for strings like "Do Not Use",
-    //   out = this.checkForDoNotUse(record, out);
-    //   return out;
-    // });
+    this.importer.registerRecordHook((record, index) => {
+      let out: any = {};
+      // Check All Properties for strings like "Do Not Use",
+      out = this.checkForDoNotUse(record, out);
+      return out;
+    });
 
     this.importer.registerFieldHook("firstName", values => {
 
@@ -40,10 +36,10 @@ export class ContactImportComponent implements OnInit {
       values.forEach((item:any) => {
 
         if (item[0].indexOf('&') > -1) {
-          debugger;
+          
           changeValues.push([
             {
-              value: item[0] + 'Changed',
+              value: item[0] ,
               info: [
                 {
                   message: 'This record may contain 2 contacts',
@@ -61,22 +57,6 @@ export class ContactImportComponent implements OnInit {
 
     });
 
-    // this.importer.registerFieldHook("firstName", (values:any) => {
-    //   return [
-    //     [
-    //       {
-    //         value: "0" + values[0],
-    //         info: [
-    //           { 
-    //             message: "padded the start with a 0", 
-    //             level: "warning"
-    //           }
-    //         ]
-    //       },
-    //       values[1]
-    //     ]
-    //   ]
-    // });
 
 
 
