@@ -21,35 +21,111 @@ export class ContactImportComponent implements OnInit {
   ngOnInit() {
     FlatfileImporter.setVersion(2);
     this.initializeImporter();
-    this.importer.registerRecordHook((record, index) => {
-      let out: any = {};
-      if (record.amount) {
-        let numbers = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
-        let loanAmount = record.amount
-          .split("")
-          .filter(item => numbers.includes(item));
-        out.amount = {
-          value: loanAmount.join(""),
-          info: [
+    // this.importer.registerRecordHook((record, index) => {
+    //   let out: any = {};
+
+
+
+
+    //   // Check All Properties for strings like "Do Not Use",
+    //   out = this.checkForDoNotUse(record, out);
+    //   return out;
+    // });
+
+    this.importer.registerFieldHook("firstName", values => {
+
+      let changeValues = [];
+
+
+      values.forEach((item:any) => {
+
+        if (item[0].indexOf('&') > -1) {
+          debugger;
+          changeValues.push([
             {
-              message: "Loan amounts were reformatted automatically",
-              level: "info"
+              value: item[0] + 'Changed',
+              info: [
+                {
+                  message: 'This record may contain 2 contacts',
+                  level: 'warning'
+                }
+              ]
             }
-          ]
-        };
-      }
-      return out;
+          ]);
+        } 
+
+      });
+
+
+      return changeValues;
+
     });
+
+    // this.importer.registerFieldHook("firstName", (values:any) => {
+    //   return [
+    //     [
+    //       {
+    //         value: "0" + values[0],
+    //         info: [
+    //           { 
+    //             message: "padded the start with a 0", 
+    //             level: "warning"
+    //           }
+    //         ]
+    //       },
+    //       values[1]
+    //     ]
+    //   ]
+    // });
+
+
+
+
     this.importer.setCustomer({
-      userId: "19234",
-      name: "Foo Bar"
+      userId: "123",
+      name: "Jonathan"
     });
   }
 
-  async launchImporter() {
-    if (!this.LICENSE_KEY) {
-      return alert("Set LICENSE_KEY on Line 13 before continuing.");
+  checkForDoNotUse(record, out) {
+
+    var doNotStrings = [
+      'do not',
+      "don't use",
+      "invalid",
+      "duplicate"
+    ]
+
+    for (const property in record) {
+
+      for (let i = 0; i < doNotStrings.length; i++) {
+        const str = doNotStrings[i];
+        
+          if (record[property].toLowerCase().IndexOf(str) > -1) {
+
+            
+            out[property] = {
+              value: record[property],
+              info: [
+                {
+                  message: "Loan amounts were reformatted automatically",
+                  level: "error"
+                }
+              ]
+            };
+          }
+ 
+      }
+
+
+
     }
+
+    return out;
+  }
+
+  async launchImporter() {
+
     try {
       let results = await this.importer.requestDataFromUser();
       this.importer.displayLoader();
@@ -67,47 +143,22 @@ export class ContactImportComponent implements OnInit {
     this.importer = new FlatfileImporter(this.LICENSE_KEY, {
       fields: [
         {
-          label: "Loan Number",
-          key: "load_id",
-          alternates: ["number", "id number"],
+          label: 'Distinct ID',
+          key: 'distinctId',
           validators: [
             {
-              validate: "regex_matches",
-              regex: "^[a-zA-Z0-9]*$",
-              error: "must be a valid alphanumeric loan number"
-            },
-            {
-              validate: "required",
-              error: "this is a required field"
+              validate: "unique",
+              error: "this is a unique field"
             }
           ]
         },
         {
-          label: "Loan Issuer",
-          key: "issuer",
-          description: "Name of the loan original issuer",
-          validators: [
-            {
-              validate: "required",
-              error: "this field is required"
-            }
-          ]
+          label: 'Prefix',
+          key: 'prefix'
         },
         {
-          label: "Loan Amount",
-          key: "amount",
-          validators: [
-            {
-              validate: "regex_matches",
-              regex: "^[0-9]*$",
-              error: "must be a numeric value"
-            }
-          ]
-        },
-        {
-          label: "Loan Date",
-          key: "date",
-          alternates: ["issued at", "loan time", "date"],
+          label: 'First Name',
+          key: 'firstName',
           validators: [
             {
               validate: "required",
@@ -116,16 +167,89 @@ export class ContactImportComponent implements OnInit {
           ]
         },
         {
-          label: "Contact Email",
-          key: "email",
-          description: "Email of loan issuer"
+          label: 'Last Name',
+          key: 'lastName',
+          validators: [
+            {
+              validate: "required",
+              error: "this is a required field"
+            }
+          ]
+        },
+        {
+          label: 'Address 1',
+          key: 'addressLine1',
+          alternates: ['address 1', 'address line 1']
+        },
+        {
+          label: 'Address 2',
+          key: 'addressLine2',
+          alternates: ['address 2', 'address line 2']
+        },
+        {
+          label: 'City',
+          key: 'city'
+        },
+        {
+          label: 'State',
+          key: 'state'
+        },
+        {
+          label: 'Postal Code',
+          key: 'postalCode',
+          alternates: ['Zip', 'Zip Code']
+        },
+        {
+          label: 'Phone 1',
+          key: 'phone1',
+          alternates: ['cell', 'mobile', 'mobile phone', 'cell phone']
+        },
+        {
+          label: 'Phone 2',
+          key: 'phone2',
+          alternates: ['work', 'work phone']
+        },
+        {
+          label: 'Phone 3',
+          key: 'phone3',
+          alternates: ['fax', 'fax number']
+        },
+        {
+          label: 'Phone 4',
+          key: 'phone4'
+        },
+        {
+          label: 'Email 1',
+          key: 'email1',
+          alternates: ['primary email', 'email address', 'home email', 'primary email address', 'home email address']
+        },
+        {
+          label: 'Email 2',
+          key: 'email2',
+          alternates: ['secondary email', 'secondary email address', 'work email', 'work email address']
+        },
+        {
+          label: 'Email 3',
+          key: 'email3'
+        },
+        {
+          label: 'Email 4',
+          key: 'email4'
+        },
+        {
+          label: 'Attention Flag',
+          key: 'attentionFlag'
+        },
+        {
+          label: 'Email 1',
+          key: 'email1'
         }
       ],
-      type: "Loans",
+      type: "Contacts",
       allowInvalidSubmit: true,
       managed: true,
       allowCustom: true,
-      disableManualInput: false
+      disableManualInput: true
     });
   }
 
