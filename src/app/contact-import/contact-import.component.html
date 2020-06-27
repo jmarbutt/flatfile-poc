@@ -1,0 +1,14 @@
+<!-- The content below is only a placeholder and can be replaced. -->
+<div class="App">
+
+    <input
+      type="button"
+      id="launch"
+      (click)="launchImporter()"
+      [ngClass]="{disabled:!LICENSE_KEY}"
+      value="Launch Importer"
+    />
+
+    <textarea id="raw_output" value="">{{results}}</textarea>
+  </div>
+  

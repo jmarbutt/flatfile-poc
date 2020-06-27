@@ -1,1 +1,88 @@
 /* You can add global styles to this file, and also import other style files */
+.App {
+    background: #fff;
+    color: #3c4151;
+    font-family: "Gotham Pro", Arial, serif;
+  }
+  
+  .download {
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+  }
+  
+  .download a {
+    color: #1d62b4;
+  }
+  
+  .download a:hover {
+    color: #1d62b4;
+  }
+  
+  #launch {
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+    margin: 96px 0 64px 0;
+    border: none;
+    border-radius: 4px;
+    color: #fff;
+    display: block;
+    padding: 0 64px;
+    height: 44px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    font-size: 15px;
+    font-weight: 500;
+    outline: 0;
+    background-color: #4a90e2;
+  }
+  
+  #launch:focus,
+  #launch:hover {
+    background-color: #2171ce;
+  }
+  
+  #launch:active {
+    background-color: #1d62b4;
+  }
+  
+  #raw_output {
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 50%;
+    padding: 30px;
+    margin: 32px 0;
+    border: 1px solid #c1c6d1;
+    border-radius: 4px;
+    font-family: "Courier New", monospace;
+    background-color: #3c4151;
+    color: #fff;
+    height: 200px;
+  }
+  
+  .licenseAsk {
+    width: 80%;
+    margin: 0 auto;
+    padding: 20px;
+    border-radius: 4px;
+    box-shadow: rgba(0, 0, 0, 0.1) 0 0 20px;
+    margin-top: 20px;
+    font-size: 16px;
+    text-align: center;
+    font-weight: bold;
+  }
+  
+  .licenseAsk p {
+    font-size: 14px;
+    margin-bottom: 0;
+    font-weight: normal;
+  }
+  
+  #launch.disabled {
+    background-color: gray;
+    cursor: not-allowed;
+  }
+  
